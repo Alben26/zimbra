@@ -10,6 +10,7 @@ from ..decorators import reset_token_required
 from ..emails import send_activation, send_password_reset
 from ..extensions import login_manager
 from ..data.zimbraadmin import zm
+import json
 
 blueprint = Blueprint('auth', __name__)
 
@@ -137,14 +138,13 @@ def adduserzimbra():
     return render_template("auth/zimbraaccountadd.tmpl", form=form)
 
 @login_required
-@blueprint.route('/zimbradeleteuser', methods=['GET', 'POST'])
-def deleteuserzimbra():
+@blueprint.route('/zimbradeleteuser/<id>', methods=['GET', 'POST'])
+def deleteuserzimbra(id):
     form = DelUserForm()
-    if form.validate_on_submit():
-        if zm.deleteAccount(id=form.email.data):
-            flash("Account " + form.email.data +" deleted", "info")
-            return redirect(url_for('public.index'))
-    return render_template("auth/zimbraaccountdelete.tmpl", form=form)
+    r = zm.deleteAccount(id=id)
+    flash(r)
+    flash("Account " + id +" deleted", "info")
+    return redirect(url_for('public.index'))
 
 @login_required
 @blueprint.route('/zimbralistusers', methods=['GET', 'POST'])
@@ -165,4 +165,4 @@ def loginpostmaster():
 def showuserzimbra():
     r = zm.getAccount(name="user@test.cz")
     print r
-    return render_template("auth/zimbrashowaccount.tmpl", data=r) 
+    return render_template("auth/zimbrashowaccount.tmpl", data=r)

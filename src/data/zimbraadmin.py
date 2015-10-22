@@ -98,8 +98,8 @@ class ZimbraManager:
             'GetAccountRequest',
             {
                 "account": {
-                    'by': 'name',
-                    '_content': kwargs.get('name')
+                    'by': 'id',
+                    '_content': kwargs.get('id')
                 },
             },
             "urn:zimbraAdmin"
